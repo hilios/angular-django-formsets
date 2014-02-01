@@ -1,5 +1,6 @@
-module('djangoFormsetController');
+describe('djangoFormsetController', function(){
 
-test('assert true', function() {
-  ok(true);
+  it('should test', function() {
+    expect(true).to.be.true;
+  });
 });

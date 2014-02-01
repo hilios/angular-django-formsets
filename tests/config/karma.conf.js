@@ -6,13 +6,26 @@ module.exports = function(config) {
     // base path, that will be used to resolve files and exclude
     basePath: '../..',
     // frameworks to use
-    frameworks: ['qunit'],
+    frameworks: [
+      'mocha',
+      'chai',
+      'sinon-chai'
+    ],
     // list of files / patterns to load in the browser
     files: [
+      'tests/lib/angular/angular.js',
+      'tests/lib/angular-mocks/angular-mocks.js',
+      'tests/config/global.js',
+      
+      'djangoFormsets/**/module.js',
+      'djangoFormsets/**/*.js',
       'tests/**/*_test.js'
     ],
     // list of files to exclude
-    exclude: [],
+    exclude: [
+      '**/*.min.js', 
+      '**/*.conf.js'
+    ],
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     reporters: ['dots', 'progress'],
@@ -22,7 +35,7 @@ module.exports = function(config) {
     colors: true,
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_DISABLE,
+    logLevel: config.LOG_ERROR,
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: false,
     // Start these browsers, currently available:
@@ -41,7 +54,8 @@ module.exports = function(config) {
     singleRun: true,
 
     plugins: [
-      'karma-qunit',
+      'karma-mocha',
+      'karma-chai-plugins',
       'karma-phantomjs-launcher'
     ]
   });
