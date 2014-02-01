@@ -13,13 +13,13 @@ module.exports = function(config) {
     ],
     // list of files / patterns to load in the browser
     files: [
-      'tests/lib/angular/angular.js',
-      'tests/lib/angular-mocks/angular-mocks.js',
-      'tests/config/global.js',
+      'test/lib/angular/angular.js',
+      'test/lib/angular-mocks/angular-mocks.js',
+      'test/config/global.js',
       
       'djangoFormsets/**/module.js',
       'djangoFormsets/**/*.js',
-      'tests/**/*_test.js'
+      'test/**/*_test.js'
     ],
     // list of files to exclude
     exclude: [
