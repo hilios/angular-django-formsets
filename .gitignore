@@ -34,3 +34,22 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Node
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+
+pids
+logs
+results
+build
+
+node_modules
+
+.DS_Store
