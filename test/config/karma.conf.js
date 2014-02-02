@@ -28,7 +28,7 @@ module.exports = function(config) {
     ],
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['dots', 'progress'],
+    reporters: ['dots', 'coverage'],
     // web server port
     port: 9876,
     // enable / disable colors in the output (reporters and logs)
@@ -56,7 +56,12 @@ module.exports = function(config) {
     plugins: [
       'karma-mocha',
       'karma-chai-plugins',
+      'karma-coverage',
       'karma-phantomjs-launcher'
-    ]
+    ],
+    coverageReporter: {
+      type : 'html',
+      dir : 'coverage/'
+    }
   });
 };
