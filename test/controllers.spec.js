@@ -34,6 +34,13 @@ describe('djangoFormsetController', function(){
     expect(controller).to.be.defined;
   });
 
+  it('should set variables from the attrs', function() {
+    expect(controller.__template__).to.be.equal(TEMPLATE);
+    expect(controller.__formsetprefix__).to.be.equal(attrs.djangoFormsetPrefix);
+    expect(controller.__candelete__).to.be.equal(attrs.djangoFormsetCanDelete);
+    expect(controller.__canorder__).to.be.equal(attrs.djangoFormsetCanOrder);
+  });
+
   describe('#setup(element)', function() {
 
     it('should set the __formset__ element', function() {
@@ -154,17 +161,62 @@ describe('djangoFormsetController', function(){
   });
 
   describe('#removeFormset(element)', function() {
-    it('should remove formset children from the container');
-    it('should find the children container with prefix data-*');
-    it('should find the children container with prefix x-*');
+    var child, removeButton;
+
+    beforeEach(inject(function($compile) {
+      child = angular.element('<li>' +
+        '<button>Remove</button>' +
+        '</li>');
+      removeButton = child.find('button');
+      // Append to container
+      container.append(child);
+      // Setup the controller
+      controller.setup(formset);
+      controller.registerChild(child);
+    }));
+
+    it('should remove formset child', function() {
+      child.attr('django-formset-child', '');
+      controller.removeFormset(removeButton);
+      expect(container.html()).to.be.equal('');
+    });
+
+    it('should find the children container with prefix data-*', function() {
+      child.attr('data-django-formset-child', '');
+      controller.removeFormset(removeButton);
+      expect(container.html()).to.be.equal('');
+    });
+
+    it('should find the children container with prefix x-*', function() {
+      child.attr('x-django-formset-child', '');
+      controller.removeFormset(removeButton);
+      expect(container.html()).to.be.equal('');
+    });
+
     it('should hide formeset children and set delete input if __candelete__');
   });
 
   describe('#registerChild(element)', function() {
-    it('should add a children and update');
+    it('should add a children and update', function() {
+      var child = sinon.mock(),
+        update = sinon.stub(controller, 'update');
+
+      controller.registerChild(child);
+      expect(controller.__children__).to.include.members([child]);
+      expect(update.calledOnce).to.be.ok;
+    });
   });
 
   describe('#destroyChild', function() {
-    it('should remove a children and update');
+    it('should remove a children and update', function() {
+      var child = sinon.mock(),
+        update = sinon.stub(controller, 'update');
+
+      controller.registerChild(child);
+      controller.destroyChild(child);
+
+      expect(controller.__children__).to.not.include.members([child]);
+      expect(update.calledTwice).to.be.ok;
+    });
   });
 });

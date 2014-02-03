@@ -49,10 +49,10 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
               self.__totalforms__ = input;
               break;
             case 'INITIAL_FORMS':
-              self.__minforms__ = parseInt(input.val());
+              self.__minforms__ = parseInt(input.val()) || self.__minforms__;
               break;
             case 'MAX_NUM_FORMS':
-              self.__maxforms__ = parseInt(input.val());
+              self.__maxforms__ = parseInt(input.val()) || self.__maxforms__;
               break;
           }
         }
@@ -91,18 +91,27 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
     }
 
     self.removeFormset = function(element) {
-      if(self.__children__.length - 1 >= self.__minforms__) {
-        var child = element, isChild = false;
-        while(!isChild && child.prop('tagName') !== 'BODY') {
-          child = child.parent();
-          isChild = child.attr('django-formset-child') !== undefined ||
-            child.attr('data-django-formset-child') !== undefined ||
-            child.attr('x-django-formset-child') !== undefined;
+      if(self.__children__.length > self.__minforms__) {
+        var child = element, 
+          isChild = function(child) {
+            return child.attr('django-formset-child') !== undefined ||
+              child.attr('data-django-formset-child') !== undefined ||
+              child.attr('x-django-formset-child') !== undefined;
+          };
+        // Find the child container
+        while(!isChild(child) && child.prop('tagName') !== 'BODY') {
+          child = child.parent(); 
         }
         if(child.prop('tagName') !== 'BODY') {
-          child.scope().$destroy();
-          child.remove();
+          try {
+            child.scope().$destroy();
+          } catch(error) {
+            // ...
+          } finally {
+            child.remove();
+          }
         }
+        return child;
       }
     }
 
