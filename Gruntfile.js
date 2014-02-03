@@ -5,13 +5,15 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    bower: grunt.file.readJSON('bower.json'),
     global: {
       src: ['djangoFormsets/**/module.js', 'djangoFormsets/**/*.js'],
-      bin: 'angularformsets/static/<%= pkg.name %>',
+      bin: 'angularformsets/static/<%= bower.name %>',
       license: grunt.file.read('LICENSE').split('\n').splice(3).join('\n'),
       banner: '/*!\n' +
-        ' * <%= pkg.title %> v<%= pkg.version %> (<%= pkg.homepage %>)\n' +
-        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
+        ' * <%= bower.title %> v<%= bower.version %>' +
+        ' * <%= bower.homepage %>\n' +
+        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= bower.author %>\n' +
         ' * <%= global.license.replace(/\\n/gm, "\\n * ") %>\n' +
         ' */\n',
     },

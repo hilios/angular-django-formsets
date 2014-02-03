@@ -1,6 +1,5 @@
 {
   "name": "angular-django-formsets",
-  "title": "AngularJS Django formsets directives",
   "version": "0.0.1",
   "description": "A set of AngularJS directives to manage Django Formsets.",
   "repository": {
