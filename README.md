@@ -1,6 +1,8 @@
 angular-django-formets
 ======================
 
+[![Build Status](https://travis-ci.org/hilios/angular-django-formsets.png?branch=master)](https://travis-ci.org/hilios/angular-django-formsets)
+
 A set of AngularJS directives to easily manage Django Formsets into front-end.
 
 ## Usage
