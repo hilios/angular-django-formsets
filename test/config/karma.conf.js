@@ -60,8 +60,7 @@ module.exports = function(config) {
       'karma-phantomjs-launcher'
     ],
     coverageReporter: {
-      type : 'html',
-      dir : 'coverage/'
+      type : 'text'
     }
   });
 };
