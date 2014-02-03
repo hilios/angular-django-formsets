@@ -39,7 +39,7 @@ angular.module('djangoFormsets')
     link: function postLink(scope, element, attrs, controller) {
       element.on('click', function(event) {
         event.preventDefault();
-        controller.addFormset(element);
+        controller.addFormset();
       });
       scope.$on('$destroy', function() {
         element.off('click');
