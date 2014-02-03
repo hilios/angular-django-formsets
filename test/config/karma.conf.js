@@ -19,7 +19,7 @@ module.exports = function(config) {
       
       'djangoFormsets/**/module.js',
       'djangoFormsets/**/*.js',
-      'test/**/*_test.js'
+      'test/**/*.spec.js'
     ],
     // list of files to exclude
     exclude: [
