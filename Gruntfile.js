@@ -41,8 +41,8 @@ module.exports = function(grunt) {
     },
     watch: {
       dev: {
-        files: ['<%= global.src %>'],
-        tasks: ['build']
+        files: ['<%= global.src %>', 'test/**/*.js'],
+        tasks: ['test']
       }
     },
     karma: {
@@ -67,5 +67,5 @@ module.exports = function(grunt) {
   // My custom alias
   grunt.registerTask('build', ['jsonlint', 'uglify']);
   grunt.registerTask('test', ['karma:unit']);
-  grunt.registerTask('default', ['build']);
+  grunt.registerTask('default', ['watch']);
 }
