@@ -1,6 +1,7 @@
 describe('djangoFormsetController', function(){
 
   var controller,
+    formset,
     container,
     totalFormInput,
     attrs = {
@@ -15,15 +16,18 @@ describe('djangoFormsetController', function(){
       input.val(value || '');
       return input;
     },
-    TEMPLATE = '<div data-fid="__prefix__">Foo Bar</di>';
+    TEMPLATE = '<li data-fid="__prefix__">Foo Bar</li>';
 
   beforeEach(inject(function($controller, $templateCache) {
     $templateCache.put(attrs.djangoFormset, TEMPLATE);
     controller = $controller('djangoFormsetController', {$attrs: attrs});
-    //
+    // Setup the formset element
     totalFormInput = formsetInput('TOTAL_FORMS', '0');
-    container = angular.element('<div></div>');
-    container.append(totalFormInput);
+    formset = angular.element('<section></section>');
+    formset.append(totalFormInput);
+    // Setup the formset container element
+    container = angular.element('<ul></ul>');
+    controller.__container__ = container;
   }));
 
   it('should define a controller', function() {
@@ -32,14 +36,14 @@ describe('djangoFormsetController', function(){
 
   describe('#setup(element)', function() {
 
-    it('should set the __formset__ container element', function() {
-      controller.setup(container);
+    it('should set the __formset__ element', function() {
+      controller.setup(formset);
       expect(controller.__formset__).to.be.defined;
-      expect(controller.__formset__).to.be.equal(container);
+      expect(controller.__formset__).to.be.equal(formset);
     });
 
     it('should set the __template__', function() {
-      controller.setup(container);
+      controller.setup(formset);
       expect(controller.__template__).to.be.defined;
       expect(controller.__template__).to.be.equal(TEMPLATE);
     });
@@ -52,7 +56,7 @@ describe('djangoFormsetController', function(){
         child.append(formsetInput(childFid + '-foo'));
         controller.__children__.push(child);
         // Setup
-        controller.setup(container);
+        controller.setup(formset);
         expect(controller.__fid__).to.be.equal(childFid);
       }
     );
@@ -61,40 +65,47 @@ describe('djangoFormsetController', function(){
       var totalFormsValue = '10';
       totalFormInput.val(totalFormsValue);
 
-      controller.setup(container);
+      controller.setup(formset);
       expect(controller.__totalforms__).to.be.defined;
       expect(controller.__totalforms__.val()).to.be.equal(totalFormsValue);
     });
 
     it('should find the __minforms__ element', function() {
       var minFormsValue = 1;
-      container.append(formsetInput('INITIAL_FORMS', minFormsValue));
+      formset.append(formsetInput('INITIAL_FORMS', minFormsValue));
 
-      controller.setup(container);
+      controller.setup(formset);
       expect(controller.__minforms__).to.be.equal(minFormsValue);
     });
 
     it('should find the __maxforms__ element', function() {
       var maxFormsValue = 50;
-      container.append(formsetInput('MAX_NUM_FORMS', maxFormsValue));
+      formset.append(formsetInput('MAX_NUM_FORMS', maxFormsValue));
 
-      controller.setup(container);
+      controller.setup(formset);
       expect(controller.__maxforms__).to.be.equal(maxFormsValue);
     });
 
-    it('should raise and error if __totalforms__ is not defined', function() {
-      var badContainer = angular.element('<div><!-- No input here --></div>');
+    it('should raise an error if __totalforms__ is not defined', function() {
+      var badFormset = angular.element('<div><!-- No inputs here --></div>');
       expect(
         function() {
-          controller.setup(badContainer);
+          controller.setup(badFormset);
         }
       ).to.throw(SyntaxError).and.to.throw(/TOTAL_FORMS/);
+    });
+
+    it('should raise an error if __container__ is not defined', function() {
+      controller.__container__ = null;
+      expect(function() {
+        controller.setup(formset);
+      }).to.throw(SyntaxError).and.to.throw(/django\-formset\-container/);
     });
   });
 
   describe('#update()', function() {
     beforeEach(function() {
-      controller.setup(container);
+      controller.setup(formset);
     });
 
     it('should update __totalforms__ value with current children length', 
@@ -111,10 +122,35 @@ describe('djangoFormsetController', function(){
   });
 
   describe('#addFormset()', function() {
-    it('should increase __fid__');
-    it('should replace any __prefix__ in the template with __fid__ value');
-    it('should append/compile a new formset children to the container');
-    it('should not add if __maxforms__ is reached');
+    beforeEach(function() {
+      controller.setup(formset);
+    });
+
+    it('should increase __fid__', function() {
+      var lastFid = angular.copy(controller.__fid__);
+      controller.addFormset();
+      expect(controller.__fid__).to.be.above(lastFid);
+      expect(controller.__fid__).to.be.equal(lastFid + 1);
+    });
+
+    it('should replace any __prefix__ in the template with __fid__ value', 
+      function() {
+        var child = controller.addFormset();
+        expect(child.html()).to.not.match(/__prefix__/);
+      }
+    );
+
+    it('should append/compile a new formset children to the container',
+      function() {
+        var child = controller.addFormset();
+        expect(child.parent().html()).to.be.equal(container.html());
+      }
+    );
+    it('should not add if __maxforms__ is reached', function() {
+      controller.__maxforms__ = 0;
+      controller.addFormset();
+      expect(container.children().length).to.be.equal(0);
+    });
   });
 
   describe('#removeFormset(element)', function() {

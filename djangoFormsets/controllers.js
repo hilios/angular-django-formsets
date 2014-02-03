@@ -62,6 +62,11 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
         throw new SyntaxError("Could't find formset TOTAL_FORMS input, " +
           "check if you printed {{formset.management_form}}");
       }
+      // If __container__ wans't set throw an error
+      if(!self.__container__) {
+        throw new SyntaxError("Formset container cound't be found, " +
+          "please add django-formset-container to a child");
+      }
     }
 
     self.update = function() {
@@ -71,7 +76,7 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
     }
 
     self.addFormset = function() {
-      if(self.__children__.length + 1 <= self.__maxforms__) {
+      if(self.__children__.length < self.__maxforms__) {
         self.__fid__ += 1;
         // Setup a new element from template
         var element = angular.element(
@@ -80,7 +85,8 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
         // Add the template to container and children's list
         self.__container__.append(element);
         // Compile after append to inherits controller
-        $compile(element)(self.__formset__.scope());
+        $compile(element)(self.__formset__.scope() || {});
+        return element;
       }
     }
 

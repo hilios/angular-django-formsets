@@ -52,17 +52,18 @@ module.exports = function(config) {
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
     singleRun: true,
-
-    preprocessors: {
-      'djangoFormsets/**/*.js': 'coverage'
-    },
-
+    // Setup plugins that karma need to include
     plugins: [
       'karma-mocha',
       'karma-chai-plugins',
       'karma-coverage',
       'karma-phantomjs-launcher'
     ],
+    // Plugins configurations
+    preprocessors: {
+      'djangoFormsets/**/*.js': 'coverage'
+    },
+    // Instanbul reporter configuration
     coverageReporter: {
       type : 'text'
     }
