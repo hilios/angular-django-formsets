@@ -30,7 +30,7 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
           "\\-([A-Z_]+)");
       // Find the higher __fid__
       angular.forEach(self.__children__, function(value, index) {
-        var inputName = value.find('input').prop('name'), fid;
+        var fid, inputName = value.find('input').prop('name');
         inputName = inputName.match(fidRegexp);
         if(inputName) {
           fid = parseInt(inputName[1]);
@@ -57,6 +57,11 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
           }
         }
       });
+      // If __totalforms__ input wasn't found throw an error
+      if(!self.__totalforms__) {
+        throw new SyntaxError("Could't find formset TOTAL_FORMS input, " +
+          "check if you printed {{formset.management_form}}");
+      }
     }
 
     self.update = function() {

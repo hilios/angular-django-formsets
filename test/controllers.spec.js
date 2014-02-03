@@ -1,16 +1,22 @@
 describe('djangoFormsetController', function(){
 
-  var controller, attrs = {
-    djangoFormset: '_formset_template.html',
-    djangoFormsetPrefix: 'foo',
-    djangoFormsetCanDelete: true,
-    djangoFormsetCanOrder: true
-  };
+  var controller, 
+    attrs = {
+      djangoFormset: '_formset_template.html',
+      djangoFormsetPrefix: 'foo',
+      djangoFormsetCanDelete: true,
+      djangoFormsetCanOrder: true
+    },
+    formsetInput = function(name, value) {
+      var input = angular.element('<input>');
+      input.prop('name', attrs.djangoFormsetPrefix + '-' + name);
+      input.val(value || '');
+      return input;
+    },
+    TEMPLATE = '<div data-fid="__prefix__">Foo Bar</di>';
 
   beforeEach(inject(function($controller, $templateCache) {
-    $templateCache.put(attrs.djangoFormset, 
-      '<div data-fid="__prefix__">Foo Bar</di>');
-
+    $templateCache.put(attrs.djangoFormset, TEMPLATE);
     controller = $controller('djangoFormsetController', {$attrs: attrs});
   }));
 
@@ -19,16 +25,71 @@ describe('djangoFormsetController', function(){
   });
 
   describe('#setup(element)', function() {
-    it('should set the __formset__ container element');
-    it('should set the __template__');
-    it('should find the highest __fid__ from the formset`s children');
-    it('should find the __totalforms__ element');
-    it('should find the __minforms__ element');
-    it('should find the __maxforms__ element');
+    var element = angular.element('<div></div>'), 
+      totalFormInput = formsetInput('TOTAL_FORMS', '0');
 
-    it('should raise and error if __totalforms__ is not defined');
-    it('should raise and error if __minforms__ is not defined');
-    it('should raise and error if __maxforms__ is not defined');
+    beforeEach(function() {
+      element.append(totalFormInput);
+    });
+
+    it('should set the __formset__ container element', function() {
+      controller.setup(element);
+      expect(controller.__formset__).to.be.defined;
+      expect(controller.__formset__).to.be.equal(element);
+    });
+
+    it('should set the __template__', function() {
+      controller.setup(element);
+      expect(controller.__template__).to.be.defined;
+      expect(controller.__template__).to.be.equal(TEMPLATE);
+    });
+
+    it('should find the highest __fid__ from the formset`s children input',
+      function(){
+        var child = angular.element('<div></div>'),
+          childFid = 8;
+        // Add a input to child and add to children list
+        child.append(formsetInput(childFid + '-foo'));
+        controller.__children__.push(child);
+        // Setup
+        controller.setup(element);
+        expect(controller.__fid__).to.be.equal(childFid);
+      }
+    );
+
+    it('should find the __totalforms__ element', function() {
+      var totalFormsValue = '10';
+      totalFormInput.val(totalFormsValue);
+
+      controller.setup(element);
+      expect(controller.__totalforms__).to.be.defined;
+      expect(controller.__totalforms__.val()).to.be.equal(totalFormsValue);
+    });
+
+    it('should find the __minforms__ element', function() {
+      var minFormsValue = 1;
+      element.append(formsetInput('INITIAL_FORMS', minFormsValue));
+
+      controller.setup(element);
+      expect(controller.__minforms__).to.be.equal(minFormsValue);
+    });
+
+    it('should find the __maxforms__ element', function() {
+      var maxFormsValue = 50;
+      element.append(formsetInput('MAX_NUM_FORMS', maxFormsValue));
+
+      controller.setup(element);
+      expect(controller.__maxforms__).to.be.equal(maxFormsValue);
+    });
+
+    it('should raise and error if __totalforms__ is not defined', function() {
+      var badElement = angular.element('<div><!-- No input here --></div>');
+      expect(
+        function() {
+          controller.setup(badElement);
+        }
+      ).to.throw(SyntaxError).and.to.throw(/TOTAL_FORMS/);
+    });
   });
 
   describe('#update()', function() {

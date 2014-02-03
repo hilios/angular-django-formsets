@@ -1,5 +1,5 @@
 /*!
- * AngularJS Django formsets directives v0.0.1 (http://hilios.github.io/angular-django-formsets/)
+ * AngularJS Django formsets directives v0.0.1 * http://hilios.github.io/angular-django-formsets/
  * Copyright (c) 2014 Edson Hilios
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -144,7 +144,7 @@ angular.module("djangoFormsets").directive("djangoFormset", function() {
         link: function postLink(scope, element, attrs, controller) {
             element.on("click", function(event) {
                 event.preventDefault();
-                controller.addFormset(element);
+                controller.addFormset();
             });
             scope.$on("$destroy", function() {
                 element.off("click");
