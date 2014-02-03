@@ -53,6 +53,10 @@ module.exports = function(config) {
     // if true, it capture browsers, run tests and exit
     singleRun: true,
 
+    preprocessors: {
+      'djangoFormsets/**/*.js': 'coverage'
+    },
+
     plugins: [
       'karma-mocha',
       'karma-chai-plugins',
