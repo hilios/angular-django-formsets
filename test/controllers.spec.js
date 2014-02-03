@@ -1,6 +1,8 @@
 describe('djangoFormsetController', function(){
 
-  var controller, 
+  var controller,
+    container,
+    totalFormInput,
     attrs = {
       djangoFormset: '_formset_template.html',
       djangoFormsetPrefix: 'foo',
@@ -18,6 +20,10 @@ describe('djangoFormsetController', function(){
   beforeEach(inject(function($controller, $templateCache) {
     $templateCache.put(attrs.djangoFormset, TEMPLATE);
     controller = $controller('djangoFormsetController', {$attrs: attrs});
+    //
+    totalFormInput = formsetInput('TOTAL_FORMS', '0');
+    container = angular.element('<div></div>');
+    container.append(totalFormInput);
   }));
 
   it('should define a controller', function() {
@@ -25,21 +31,15 @@ describe('djangoFormsetController', function(){
   });
 
   describe('#setup(element)', function() {
-    var element = angular.element('<div></div>'), 
-      totalFormInput = formsetInput('TOTAL_FORMS', '0');
-
-    beforeEach(function() {
-      element.append(totalFormInput);
-    });
 
     it('should set the __formset__ container element', function() {
-      controller.setup(element);
+      controller.setup(container);
       expect(controller.__formset__).to.be.defined;
-      expect(controller.__formset__).to.be.equal(element);
+      expect(controller.__formset__).to.be.equal(container);
     });
 
     it('should set the __template__', function() {
-      controller.setup(element);
+      controller.setup(container);
       expect(controller.__template__).to.be.defined;
       expect(controller.__template__).to.be.equal(TEMPLATE);
     });
@@ -52,7 +52,7 @@ describe('djangoFormsetController', function(){
         child.append(formsetInput(childFid + '-foo'));
         controller.__children__.push(child);
         // Setup
-        controller.setup(element);
+        controller.setup(container);
         expect(controller.__fid__).to.be.equal(childFid);
       }
     );
@@ -61,39 +61,53 @@ describe('djangoFormsetController', function(){
       var totalFormsValue = '10';
       totalFormInput.val(totalFormsValue);
 
-      controller.setup(element);
+      controller.setup(container);
       expect(controller.__totalforms__).to.be.defined;
       expect(controller.__totalforms__.val()).to.be.equal(totalFormsValue);
     });
 
     it('should find the __minforms__ element', function() {
       var minFormsValue = 1;
-      element.append(formsetInput('INITIAL_FORMS', minFormsValue));
+      container.append(formsetInput('INITIAL_FORMS', minFormsValue));
 
-      controller.setup(element);
+      controller.setup(container);
       expect(controller.__minforms__).to.be.equal(minFormsValue);
     });
 
     it('should find the __maxforms__ element', function() {
       var maxFormsValue = 50;
-      element.append(formsetInput('MAX_NUM_FORMS', maxFormsValue));
+      container.append(formsetInput('MAX_NUM_FORMS', maxFormsValue));
 
-      controller.setup(element);
+      controller.setup(container);
       expect(controller.__maxforms__).to.be.equal(maxFormsValue);
     });
 
     it('should raise and error if __totalforms__ is not defined', function() {
-      var badElement = angular.element('<div><!-- No input here --></div>');
+      var badContainer = angular.element('<div><!-- No input here --></div>');
       expect(
         function() {
-          controller.setup(badElement);
+          controller.setup(badContainer);
         }
       ).to.throw(SyntaxError).and.to.throw(/TOTAL_FORMS/);
     });
   });
 
   describe('#update()', function() {
-    it('should update __totalforms__ value with current children length');
+    beforeEach(function() {
+      controller.setup(container);
+    });
+
+    it('should update __totalforms__ value with current children length', 
+      function() {
+        var lastChildrenLength = controller.__children__.length;
+        controller.__children__.push(angular.element('<div></div>'));
+        controller.update();
+
+        var totalFormsValue = parseInt(controller.__totalforms__.val());
+        expect(totalFormsValue).to.be.above(lastChildrenLength);
+        expect(totalFormsValue).to.be.equal(lastChildrenLength + 1);
+      }
+    );
   });
 
   describe('#addFormset()', function() {
