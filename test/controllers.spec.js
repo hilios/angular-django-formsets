@@ -108,6 +108,13 @@ describe('djangoFormsetController', function(){
         controller.setup(formset);
       }).to.throw(SyntaxError).and.to.throw(/django\-formset\-container/);
     });
+
+    it('should raise an error if __template__ is not defined', function() {
+      controller.__template__ = null;
+      expect(function() {
+        controller.setup(formset);
+      }).to.throw(SyntaxError).and.to.throw(/Template not found/);
+    });
   });
 
   describe('#update()', function() {

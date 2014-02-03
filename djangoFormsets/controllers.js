@@ -5,7 +5,7 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
 
     self.__fid__ = 0;
     self.__children__ = [];
-    self.__template__ = $templateCache.get($attrs.djangoFormset);
+    self.__template__ = $templateCache.get($attrs.djangoFormset) || '';
     self.__formsetprefix__ = $attrs.djangoFormsetPrefix || 'form';
     self.__candelete__ = $attrs.djangoFormsetCanDelete || false;
     self.__canorder__ = $attrs.djangoFormsetCanOrder || false;
@@ -57,6 +57,10 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
           }
         }
       });
+      // If template wasn't found throw an error
+      if(!self.__template__) {
+        throw new SyntaxError("Template not found");
+      }
       // If __totalforms__ input wasn't found throw an error
       if(!self.__totalforms__) {
         throw new SyntaxError("Could't find formset TOTAL_FORMS input, " +
