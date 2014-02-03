@@ -41,7 +41,7 @@ angular.module('djangoFormsets')
         event.preventDefault();
         controller.addFormset();
       });
-      scope.$on('$destroy', function() {
+      element.on('$destroy', function() {
         element.off('click');
       });
     }
