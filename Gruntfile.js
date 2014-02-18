@@ -48,8 +48,11 @@ module.exports = function(grunt) {
     karma: {
       unit: {
         configFile: 'test/config/karma.conf.js',
-        background: false,
-        autoWatch: false,
+        autoWatch: true,
+        singleRun: false
+      },
+      travis: {
+        configFile: '<%= karma.unit.configFile %>',
         singleRun: true
       }
     },
@@ -66,6 +69,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jsonlint');
   // My custom alias
   grunt.registerTask('build', ['jsonlint', 'uglify']);
-  grunt.registerTask('test', ['karma:unit']);
-  grunt.registerTask('default', ['watch']);
+  grunt.registerTask('test', ['karma:travis']);
+  grunt.registerTask('default', ['karma:unit']);
 }

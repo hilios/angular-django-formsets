@@ -37,7 +37,7 @@ module.exports = function(config) {
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_ERROR,
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+    autoWatch: true,
     // Start these browsers, currently available:
     // - Chrome
     // - ChromeCanary
@@ -51,7 +51,7 @@ module.exports = function(config) {
     captureTimeout: 60000,
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: true,
+    singleRun: false,
     // Setup plugins that karma need to include
     plugins: [
       'karma-mocha',
@@ -65,7 +65,7 @@ module.exports = function(config) {
     },
     // Instanbul reporter configuration
     coverageReporter: {
-      type : 'text'
+      type: 'text'
     }
   });
 };
