@@ -1,5 +1,5 @@
 describe('djangoFormsets.directives', function() {
-  var formset, container, controller, compile;
+  var formset, container, controller;
 
   beforeEach(inject(
     function($rootScope, $compile, $controller, $templateCache) {

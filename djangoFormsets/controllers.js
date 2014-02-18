@@ -18,10 +18,10 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
 
     self.setup = function(element) {
       self.__formset__ = element;
-      // Removes leading whitespaces from template, hence jqLite fails can't
-      // parse them.
+      // Removes leading whitespaces from template, hence jqLite can't
+      // parse the element with them.
       if(self.__template__) {
-        self.__template__ = self.__template__.replace(/^(\s|\n){1,}/gi, '');
+        self.__template__ = self.__template__.replace(/^(\s|\n|\t){1,}/gi, '');
       }
       // Grab management form elements
       var fidRegexp = new RegExp(self.__formsetprefix__ +
@@ -78,9 +78,7 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
     }
 
     self.update = function() {
-      if(self.__totalforms__) {
-        self.__totalforms__.val(self.__children__.length);
-      }
+      self.__totalforms__.val(self.__children__.length);
     }
 
     self.addFormset = function() {

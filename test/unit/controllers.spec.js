@@ -190,6 +190,10 @@ describe('djangoFormsetController', function(){
       controller.registerChild(child);
     }));
 
+    it('should have child in the container', function() {
+      expect(container.html()).to.be.ok;
+    });
+
     it('should remove formset child', function() {
       child.attr('django-formset-child', '');
       controller.removeFormset(removeButton);
@@ -206,6 +210,20 @@ describe('djangoFormsetController', function(){
       child.attr('x-django-formset-child', '');
       controller.removeFormset(removeButton);
       expect(container.html()).to.be.equal('');
+    });
+
+    it('should not remove body tag', function() {
+      var body = angular.element('<body></body>'),
+        removeFn = sinon.spy(body, 'remove');
+      controller.removeFormset(body);
+      expect(removeFn.called).to.not.be.ok;
+    });
+
+    it('should not remove if __minforms__ is reached', function() {
+      child.attr('django-formset-child', '');
+      controller.__minforms__ = 1;
+      controller.removeFormset(removeButton);
+      expect(container.html()).to.not.be.equal('');
     });
 
     it('should hide formeset children and set delete input if __candelete__');
