@@ -4,7 +4,7 @@
 module.exports = function(config) {
   config.set({
     // base path, that will be used to resolve files and exclude
-    basePath: '../..',
+    basePath: '..',
     // frameworks to use
     frameworks: [
       'mocha',
@@ -16,16 +16,15 @@ module.exports = function(config) {
       'test/lib/jquery/jquery.js',
       'test/lib/angular/angular.js',
       'test/lib/angular-mocks/angular-mocks.js',
-      'test/config/global.js',
-      
+      'test/mocha.conf.js',
       'djangoFormsets/**/module.js',
       'djangoFormsets/**/*.js',
-      'test/**/*.spec.js'
+      'test/unit/**/*.spec.js'
     ],
     // list of files to exclude
     exclude: [
-      '**/*.min.js', 
-      '**/*.conf.js'
+      '**/*.min.js',
+      '**/karma.conf.js'
     ],
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
