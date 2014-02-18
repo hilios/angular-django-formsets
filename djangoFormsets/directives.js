@@ -15,7 +15,7 @@ angular.module('djangoFormsets')
     require: '^djangoFormset',
     restrict: 'A',
     link: function postLink(scope, element, attrs, controller) {
-      controller.__container__ = element;
+      controller.setupContainer(element);
     }
   };
 })
@@ -52,12 +52,9 @@ angular.module('djangoFormsets')
     require: '^djangoFormset',
     restrict: 'A',
     link: function postLink(scope, element, attrs, controller) {
-      element.on('click', function(event) {
+      element.one('click', function(event) {
         event.preventDefault();
         controller.removeFormset(element);
-      });
-      scope.$on('$destroy', function() {
-        element.off('click');
       });
     }
   };
