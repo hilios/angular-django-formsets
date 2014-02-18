@@ -68,8 +68,10 @@ describe('djangoFormsets.directives', function() {
       expect(inheritedController).to.be.equal(controller);
     });
 
-    it('should register child on the controller', function() {
-      expect(registerChildFn.calledWith(child)).to.be.ok;
+    it('should register child on controller', function() {
+      expect(registerChildFn.called).to.be.ok;
+      // Check if the directive element was sent to method
+      expect(registerChildFn.getCall(0).args[0][0]).to.be.equal(child[0]);
     });
   });
 
@@ -88,15 +90,15 @@ describe('djangoFormsets.directives', function() {
       expect(inheritedController).to.be.equal(controller);
     });
 
-    it.skip('should add a formset child uppon click', function() {
+    it('should add a formset child uppon click', function() {
       var addChildFn = sinon.spy(controller, 'addFormset');
       addButton.click();
       expect(addChildFn.called).to.be.ok;
     });
 
-    it.skip('should remove the event click when destroyed', function() {
+    it('should remove the event click when destroyed', function() {
       var addChildFn = sinon.spy(controller, 'addFormset');
-      addButton.scope().$destroy();
+      addButton.remove();
       addButton.click();
       expect(addChildFn.called).to.not.be.ok;
     });
@@ -122,7 +124,7 @@ describe('djangoFormsets.directives', function() {
       expect(inheritedController).to.be.equal(controller);
     });
 
-    it.skip('should remove current fomset child on the controller', 
+    it('should remove current fomset child on the controller', 
       function() {
         var removeChildFn = sinon.spy(controller, 'removeFormset');
         removeButton.click();
@@ -130,11 +132,11 @@ describe('djangoFormsets.directives', function() {
       }
     );
     
-    it.skip('should only execute click once', function() {
+    it('should only execute click once', function() {
       var removeChildFn = sinon.spy(controller, 'removeFormset');
       removeButton.click();
       removeButton.click();
-      expect(removeChildFn.calledOnce).to.not.be.ok;
+      expect(removeChildFn.calledOnce).to.be.ok;
     });
   });
 });

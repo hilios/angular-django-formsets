@@ -30,6 +30,7 @@
     "bower_components"
   ],
   "dependencies": {
+    "jquery": "~2.0",
     "angular": "~1.2",
     "angular-mocks": "~1.2"
   }
