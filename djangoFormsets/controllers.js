@@ -73,6 +73,10 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
       }
     }
 
+    self.setupContainer = function(element) {
+      self.__container__ = element;
+    }
+
     self.update = function() {
       if(self.__totalforms__) {
         self.__totalforms__.val(self.__children__.length);

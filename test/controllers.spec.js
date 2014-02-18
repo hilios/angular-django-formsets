@@ -117,6 +117,14 @@ describe('djangoFormsetController', function(){
     });
   });
 
+  describe('#setupContainer(el)', function() {
+    it('should set the __container__ variable', function() {
+      var el = angular.element('<div></div>')
+      controller.setupContainer(el);
+      expect(controller.__container__).to.be.equal(el);
+    });
+  });
+
   describe('#update()', function() {
     beforeEach(function() {
       controller.setup(formset);
