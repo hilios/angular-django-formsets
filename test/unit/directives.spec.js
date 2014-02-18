@@ -53,10 +53,11 @@ describe('djangoFormsets.directives', function() {
   });
 
   describe('django-formset-child', function() {
-    var child, registerChildFn;
+    var child, registerChildFn, destroyChildFn;
 
     beforeEach(inject(function($rootScope, $compile) {
       registerChildFn = sinon.spy(controller, 'registerChild');
+      destroyChildFn = sinon.spy(controller, 'destroyChild');
       child = angular.element('<li django-formset-child></li>');
       container.append(child);
       $compile(child)($rootScope);
@@ -72,6 +73,14 @@ describe('djangoFormsets.directives', function() {
       expect(registerChildFn.called).to.be.ok;
       // Check if the directive element was sent to method
       expect(registerChildFn.getCall(0).args[0][0]).to.be.equal(child[0]);
+    });
+
+    it('should destroy child on controller uppon element remove', function() {
+      child.remove();
+
+      expect(destroyChildFn.called).to.be.ok;
+      // Check if the directive element was sent to method
+      expect(destroyChildFn.getCall(0).args[0][0]).to.be.equal(child[0]);
     });
   });
 

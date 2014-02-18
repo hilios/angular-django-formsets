@@ -26,7 +26,7 @@ angular.module('djangoFormsets')
     scope: true,
     link: function postLink(scope, element, attrs, controller) {
       controller.registerChild(element);
-      scope.$on('$destroy', function() {
+      element.on('$destroy', function() {
         controller.destroyChild(element);
       });
     }
