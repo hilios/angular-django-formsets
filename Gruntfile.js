@@ -6,7 +6,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     bower: grunt.file.readJSON('bower.json'),
-    global: {
+    ngDjangoFormset: {
       src: ['djangoFormsets/**/module.js', 'djangoFormsets/**/*.js'],
       bin: 'angularformsets/static/<%= bower.name %>',
       license: grunt.file.read('LICENSE').split('\n').splice(3).join('\n'),
@@ -14,15 +14,15 @@ module.exports = function(grunt) {
         ' * <%= bower.title %> v<%= bower.version %>' +
         ' * <%= bower.homepage %>\n' +
         ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= bower.author %>\n' +
-        ' * <%= global.license.replace(/\\n/gm, "\\n * ") %>\n' +
+        ' * <%= ngDjangoFormset.license.replace(/\\n/gm, "\\n * ") %>\n' +
         ' */\n',
     },
     uglify: {
       options: {
-        banner: '<%= global.banner %>'
+        banner: '<%= ngDjangoFormset.banner %>'
       },
       dev: {
-        files: {'<%= global.bin %>.js': '<%= global.src %>'},
+        files: {'<%= ngDjangoFormset.bin %>.js': '<%= ngDjangoFormset.src %>'},
         options: {
           beautify: true,
           compress: false,
@@ -31,29 +31,24 @@ module.exports = function(grunt) {
         }
       },
       min: {
-        files: {'<%= global.bin %>.min.js': '<%= global.src %>'},
+        files: {'<%= ngDjangoFormset.bin %>.min.js': '<%= ngDjangoFormset.src %>'},
         options: {
           report: 'min',
-          sourceMap: '<%= global.bin %>.map',
+          sourceMap: '<%= ngDjangoFormset.bin %>.map',
           preserveComments: false
         }
       }
     },
-    watch: {
-      dev: {
-        files: ['<%= global.src %>', 'test/**/*.js'],
-        tasks: ['test']
-      }
-    },
     karma: {
       unit: {
-        configFile: 'test/karma.conf.js',
+        configFile: 'karma.conf.js',
         autoWatch: true,
         singleRun: false
       },
       travis: {
         configFile: '<%= karma.unit.configFile %>',
-        singleRun: true
+        // autoWatch: false,
+        // singleRun: true
       }
     },
     jsonlint: {
@@ -64,7 +59,6 @@ module.exports = function(grunt) {
   });
   // Register NPM tasks
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-jsonlint');
   // My custom alias

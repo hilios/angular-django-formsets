@@ -1,14 +1,15 @@
-angular.module('djangoFormsets').controller('djangoFormsetController', [
+angular.module('ngDjangoFormset')
+.controller('ngDjangoFormsetCtrl', [
   '$attrs', '$templateCache', '$compile',
   function($attrs, $templateCache, $compile) {
     var self = this;
 
     self.__fid__ = 0;
     self.__children__ = [];
-    self.__template__ = $templateCache.get($attrs.djangoFormset) || '';
-    self.__formsetprefix__ = $attrs.djangoFormsetPrefix || 'form';
-    self.__candelete__ = $attrs.djangoFormsetCanDelete || false;
-    self.__canorder__ = $attrs.djangoFormsetCanOrder || false;
+    self.__template__ = $templateCache.get($attrs.formset) || '';
+    self.__formsetprefix__ = $attrs.formsetPrefix || 'form';
+    self.__candelete__ = $attrs.formsetCanDelete || false;
+    self.__canorder__ = $attrs.formsetCanOrder || false;
 
     self.__formset__ = null;
     self.__container__ = null;
@@ -98,15 +99,15 @@ angular.module('djangoFormsets').controller('djangoFormsetController', [
 
     self.removeFormset = function(element) {
       if(self.__children__.length > self.__minforms__) {
-        var child = element, 
+        var child = element,
           isChild = function(child) {
-            return child.attr('django-formset-child') !== undefined ||
-              child.attr('data-django-formset-child') !== undefined ||
-              child.attr('x-django-formset-child') !== undefined;
+            return child.attr('formset-child') !== undefined ||
+              child.attr('data-formset-child') !== undefined ||
+              child.attr('x-formset-child') !== undefined;
           };
         // Find the child container
         while(!isChild(child) && child.prop('tagName') !== 'BODY') {
-          child = child.parent(); 
+          child = child.parent();
         }
         if(child.prop('tagName') !== 'BODY') {
           try {

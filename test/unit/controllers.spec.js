@@ -1,30 +1,32 @@
-describe('djangoFormsetController', function(){
+describe('ngDjangoFormsetCtrl', function(){
 
   var controller,
     formset,
     container,
-    totalFormInput,
+    totalInputEl,
     attrs = {
-      djangoFormset: '_formset_template.html',
-      djangoFormsetPrefix: 'foo',
-      djangoFormsetCanDelete: true,
-      djangoFormsetCanOrder: true
+      formset: '_formset_template.html',
+      formsetPrefix: 'foo',
+      formsetCanDelete: true,
+      formsetCanOrder: true
     },
     formsetInput = function(name, value) {
       var input = angular.element('<input>');
-      input.prop('name', attrs.djangoFormsetPrefix + '-' + name);
+      input.prop('name', attrs.formsetPrefix + '-' + name);
       input.val(value || '');
       return input;
     },
     TEMPLATE = '<li data-fid="__prefix__">Foo Bar</li>';
 
+  beforeEach(module('ngDjangoFormset'));
+
   beforeEach(inject(function($controller, $templateCache) {
-    $templateCache.put(attrs.djangoFormset, TEMPLATE);
-    controller = $controller('djangoFormsetController', {$attrs: attrs});
+    $templateCache.put(attrs.formset, TEMPLATE);
+    controller = $controller('ngDjangoFormsetCtrl', {$attrs: attrs});
     // Setup the formset element
-    totalFormInput = formsetInput('TOTAL_FORMS', '0');
+    totalInputEl = formsetInput('TOTAL_FORMS', '0');
     formset = angular.element('<section></section>');
-    formset.append(totalFormInput);
+    formset.append(totalInputEl);
     // Setup the formset container element
     container = angular.element('<ul></ul>');
     controller.__container__ = container;
@@ -36,9 +38,9 @@ describe('djangoFormsetController', function(){
 
   it('should set variables from the attrs', function() {
     expect(controller.__template__).to.be.equal(TEMPLATE);
-    expect(controller.__formsetprefix__).to.be.equal(attrs.djangoFormsetPrefix);
-    expect(controller.__candelete__).to.be.equal(attrs.djangoFormsetCanDelete);
-    expect(controller.__canorder__).to.be.equal(attrs.djangoFormsetCanOrder);
+    expect(controller.__formsetprefix__).to.be.equal(attrs.formsetPrefix);
+    expect(controller.__candelete__).to.be.equal(attrs.formsetCanDelete);
+    expect(controller.__canorder__).to.be.equal(attrs.formsetCanOrder);
   });
 
   describe('#setup(element)', function() {
@@ -70,7 +72,7 @@ describe('djangoFormsetController', function(){
 
     it('should find the __totalforms__ element', function() {
       var totalFormsValue = '10';
-      totalFormInput.val(totalFormsValue);
+      totalInputEl.val(totalFormsValue);
 
       controller.setup(formset);
       expect(controller.__totalforms__).to.be.defined;
@@ -130,7 +132,7 @@ describe('djangoFormsetController', function(){
       controller.setup(formset);
     });
 
-    it('should update __totalforms__ value with current children length', 
+    it('should update __totalforms__ value with current children length',
       function() {
         var lastChildrenLength = controller.__children__.length;
         controller.__children__.push(angular.element('<div></div>'));
@@ -155,7 +157,7 @@ describe('djangoFormsetController', function(){
       expect(controller.__fid__).to.be.equal(lastFid + 1);
     });
 
-    it('should replace any __prefix__ in the template with __fid__ value', 
+    it('should replace any __prefix__ in the template with __fid__ value',
       function() {
         var child = controller.addFormset();
         expect(child.html()).to.not.match(/__prefix__/);
@@ -195,19 +197,19 @@ describe('djangoFormsetController', function(){
     });
 
     it('should remove formset child', function() {
-      child.attr('django-formset-child', '');
+      child.attr('formset-child', '');
       controller.removeFormset(removeButton);
       expect(container.html()).to.be.equal('');
     });
 
     it('should find the children container with prefix data-*', function() {
-      child.attr('data-django-formset-child', '');
+      child.attr('data-formset-child', '');
       controller.removeFormset(removeButton);
       expect(container.html()).to.be.equal('');
     });
 
     it('should find the children container with prefix x-*', function() {
-      child.attr('x-django-formset-child', '');
+      child.attr('x-formset-child', '');
       controller.removeFormset(removeButton);
       expect(container.html()).to.be.equal('');
     });
@@ -220,7 +222,7 @@ describe('djangoFormsetController', function(){
     });
 
     it('should not remove if __minforms__ is reached', function() {
-      child.attr('django-formset-child', '');
+      child.attr('formset-child', '');
       controller.__minforms__ = 1;
       controller.removeFormset(removeButton);
       expect(container.html()).to.not.be.equal('');

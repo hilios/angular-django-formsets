@@ -1,70 +1,46 @@
-describe('djangoFormsets.directives', function() {
+describe('ngDjangoFormset.directives', function() {
   var formset, container, controller;
+
+  beforeEach(module('ngDjangoFormset'));
 
   beforeEach(inject(
     function($rootScope, $compile, $controller, $templateCache) {
-      $templateCache.put('template.html', 'Foo Bar');
+      $templateCache.put('template.html', '<!-- No template -->');
       // Setup HTML
-      container = angular.element('<ul django-formset-container></ul>');
-      formset = angular.element('<div django-formset="template.html"></div>');
+      container = angular.element('<ul formset-container></ul>');
+      formset = angular.element('<div formset="template.html"></div>');
       formset.append('<input name="form-TOTAL_FORMS" value="0">');
       formset.append(container);
       // Create a compiler
       $compile(formset)($rootScope);
       // Grab the controller
-      controller = formset.controller('djangoFormset')
+      // controller = formset.controller('ngDjangoFormsetCtrl');
     }
   ));
-  
-  describe('django-formset', function() {
-    var setupFn;
 
-    beforeEach(function() {
-      setupFn = sinon.spy(controller, 'setup');
-    });
-
-    it('should create the controller', function() {
-      expect(controller).to.be.ok;
-    });
-
-    it('should setup the controller with element', function() {
-      expect(controller.__formset__).to.be.defined;
-      expect(controller.__formset__[0]).to.be.equal(formset[0]);
+  describe('formset', function() {
+    it('should create the an isolate scope', function() {
+      expect(formset.isolateScope()).to.be.ok;
     });
   });
 
-  describe('django-formset-container', function() {
-    var setupContainerFn;
-
-    beforeEach(inject(function($rootScope) {
-      setupContainerFn = sinon.spy(controller, 'setupContainer');
-    }));
-
-    it('should inheriths the controller', function() {
-      var inheritedController = container.controller('djangoFormset');
-      expect(inheritedController).to.be.ok;
-      expect(inheritedController).to.be.equal(controller);
-    });
-
-    it('should call setup container on controller with element', function() {
-      expect(controller.__container__).to.be.defined;
-      expect(controller.__container__[0]).to.be.equal(container[0]);
+  describe('formset-container', function() {
+    it('should share the same scope from formset', function() {
+      expect(container.scope()).to.be.equal(formset.scope());
     });
   });
 
-  describe('django-formset-child', function() {
+  describe.skip('formset-child', function() {
     var child, registerChildFn, destroyChildFn;
 
     beforeEach(inject(function($rootScope, $compile) {
-      registerChildFn = sinon.spy(controller, 'registerChild');
-      destroyChildFn = sinon.spy(controller, 'destroyChild');
-      child = angular.element('<li django-formset-child></li>');
+      child = angular.element('<li formset-child></li>');
       container.append(child);
       $compile(child)($rootScope);
     }));
 
     it('should inheriths the controller', function() {
-      var inheritedController = child.controller('djangoFormset');
+      var inheritedController = child.controller('ngDjangoFormsetCtrl');
       expect(inheritedController).to.be.ok;
       expect(inheritedController).to.be.equal(controller);
     });
@@ -84,11 +60,11 @@ describe('djangoFormsets.directives', function() {
     });
   });
 
-  describe('django-formset-add', function() {
+  describe.skip('formset-add', function() {
     var addButton;
 
     beforeEach(inject(function($rootScope, $compile) {
-      addButton = angular.element('<button django-formset-add></button>');
+      addButton = angular.element('<button formset-add></button>');
       formset.append(addButton);
       $compile(addButton)($rootScope);
     }));
@@ -113,14 +89,14 @@ describe('djangoFormsets.directives', function() {
     });
   });
 
-  describe('django-formset-remove', function() {
+  describe.skip('formset-remove', function() {
     var removeButton;
 
     beforeEach(inject(function($rootScope, $compile) {
-      removeButton = angular.element('<button django-formset-remove>' +
+      removeButton = angular.element('<button formset-remove>' +
         '</button>');
       // Setup remove button inside a child
-      child = angular.element('<li django-formset-child></li>');
+      child = angular.element('<li formset-child></li>');
       child.append(removeButton);
       container.append(child);
       // Create
@@ -133,14 +109,14 @@ describe('djangoFormsets.directives', function() {
       expect(inheritedController).to.be.equal(controller);
     });
 
-    it('should remove current fomset child on the controller', 
+    it('should remove current fomset child on the controller',
       function() {
         var removeChildFn = sinon.spy(controller, 'removeFormset');
         removeButton.click();
         expect(removeChildFn.called).to.be.ok;
       }
     );
-    
+
     it('should only execute click once', function() {
       var removeChildFn = sinon.spy(controller, 'removeFormset');
       removeButton.click();

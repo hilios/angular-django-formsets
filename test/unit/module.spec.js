@@ -1,6 +1,6 @@
-describe('djangoFormsets', function() {
-  it('should create the djangoFormsets module', function() {
-    var djangoFormsetsModule = angular.module('djangoFormsets');
-    expect(djangoFormsetsModule).to.be.defined;
+describe('ngDjangoFormset', function() {
+  it('should have module defined', function() {
+    var ngDjangoFormsetMdl = angular.module('ngDjangoFormset');
+    expect(ngDjangoFormsetMdl).to.be.defined;
   });
 });

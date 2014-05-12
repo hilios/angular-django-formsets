@@ -1,37 +1,38 @@
 {
-  "name": "angular-django-formsets",
+  "name": "angular-django-formset",
   "version": "0.0.1",
   "title": "AngularJS Django formsets directives",
-  "description": "A set of AngularJS directives to manage Django Formsets.",
-  "main": "django-formsets.js",
+  "description": "A set of AngularJS directives to manage Django Formset.",
   "keywords": [
     "angular",
     "django",
+    "formset",
     "formsets"
   ],
   "author": "Edson Hilios",
-  "homepage": "http://hilios.github.io/angular-django-formsets/",
+  "homepage": "http://hilios.github.io/angular-django-formset/",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hilios/angular-django-formsets/issues"
+    "url": "https://github.com/hilios/angular-django-formset/issues"
   },
   "main": [
-    "./build/django-formsets.js",
-    "./build/django-formsets.min.js"
+    "./angular-django-formset.js",
+    "./angular-django-formset.min.js"
   ],
   "ignore": [
     "**/.*",
-    "lib",
-    "src",
+    "ngDjangoFormset",
     "test",
     "package.json",
     "Gruntfile.js",
     "node_modules",
     "bower_components"
   ],
+  "devDependencies": {
+    "angular-mocks": "~1.2",
+    "jquery": "~2.0"
+  },
   "dependencies": {
-    "jquery": "~2.0",
-    "angular": "~1.2",
-    "angular-mocks": "~1.2"
+    "angular": "~1.2"
   }
 }

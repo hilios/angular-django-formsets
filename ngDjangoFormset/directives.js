@@ -1,27 +1,27 @@
-angular.module('djangoFormsets')
-.directive('djangoFormset', function() {
+angular.module('ngDjangoFormset')
+.directive('formset', function() {
   return {
-    require: 'djangoFormset',
+    require: 'formset',
     restrict: 'A',
-    scope: true,
-    controller: 'djangoFormsetController',
+    scope: {},
+    controller: 'ngDjangoFormsetCtrl',
     link: function postLink(scope, element, attrs, controller) {
       controller.setup(element);
     }
   };
 })
-.directive('djangoFormsetContainer', function() {
+.directive('formsetContainer', function() {
   return {
-    require: '^djangoFormset',
+    require: '^formset',
     restrict: 'A',
     link: function postLink(scope, element, attrs, controller) {
       controller.setupContainer(element);
     }
   };
 })
-.directive('djangoFormsetChild', function() {
+.directive('formsetChild', function() {
   return {
-    require: '^djangoFormset',
+    require: '^formset',
     restrict: 'A',
     scope: true,
     link: function postLink(scope, element, attrs, controller) {
@@ -32,9 +32,9 @@ angular.module('djangoFormsets')
     }
   };
 })
-.directive('djangoFormsetAdd', function() {
+.directive('formsetAdd', function() {
   return {
-    require: '^djangoFormset',
+    require: '^formset',
     restrict: 'A',
     link: function postLink(scope, element, attrs, controller) {
       element.on('click', function(event) {
@@ -47,9 +47,9 @@ angular.module('djangoFormsets')
     }
   };
 })
-.directive('djangoFormsetRemove', function() {
+.directive('formsetRemove', function() {
   return {
-    require: '^djangoFormset',
+    require: '^formset',
     restrict: 'A',
     link: function postLink(scope, element, attrs, controller) {
       element.one('click', function(event) {
