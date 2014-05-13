@@ -70,7 +70,7 @@ angular.module('ngDjangoFormset')
       // If __container__ wans't set throw an error
       if(!self.__container__) {
         throw new SyntaxError("Formset container cound't be found, " +
-          "please add django-formset-container to a child");
+          "please add formset-container to a child element");
       }
     }
 

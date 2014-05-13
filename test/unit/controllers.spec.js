@@ -108,7 +108,7 @@ describe('ngDjangoFormsetCtrl', function(){
       controller.__container__ = null;
       expect(function() {
         controller.setup(formset);
-      }).to.throw(SyntaxError).and.to.throw(/django\-formset\-container/);
+      }).to.throw(SyntaxError).and.to.throw(/formset\-container/);
     });
 
     it('should raise an error if __template__ is not defined', function() {

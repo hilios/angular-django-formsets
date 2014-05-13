@@ -1,26 +1,36 @@
 describe('ngDjangoFormset.directives', function() {
-  var formset, container, controller;
+  var $scope, $compile, formset, container,
+    childTemplate = '<li formset-child data-fid="__prefix__">' +
+      '<!-- Child --></li>';
 
   beforeEach(module('ngDjangoFormset'));
 
   beforeEach(inject(
-    function($rootScope, $compile, $controller, $templateCache) {
-      $templateCache.put('template.html', '<!-- No template -->');
+    function($rootScope, _$compile_, $templateCache) {
+      $scope = $rootScope.$new();
+      // Cache the template
+      $templateCache.put('formset-child.html', childTemplate);
       // Setup HTML
+      totalFormsInput = angular.element('<input name="form-TOTAL_FORMS" ' +
+        'value="0">');
       container = angular.element('<ul formset-container></ul>');
-      formset = angular.element('<div formset="template.html"></div>');
-      formset.append('<input name="form-TOTAL_FORMS" value="0">');
+      // Build the formset
+      formset = angular.element('<div formset="formset-child.html"></div>');
+      formset.append(totalFormsInput);
       formset.append(container);
       // Create a compiler
-      $compile(formset)($rootScope);
-      // Grab the controller
-      // controller = formset.controller('ngDjangoFormsetCtrl');
+      $compile = _$compile_;
+      $compile(formset)($scope);
     }
   ));
 
   describe('formset', function() {
     it('should create the an isolate scope', function() {
       expect(formset.isolateScope()).to.be.ok;
+    });
+
+    it('should have a container', function() {
+      expect(formset).to.have(container);
     });
   });
 
@@ -30,98 +40,80 @@ describe('ngDjangoFormset.directives', function() {
     });
   });
 
-  describe.skip('formset-child', function() {
-    var child, registerChildFn, destroyChildFn;
+  describe('formset-child', function() {
+    var child;
 
-    beforeEach(inject(function($rootScope, $compile) {
-      child = angular.element('<li formset-child></li>');
+    beforeEach(function() {
+      child = angular.element(childTemplate);
       container.append(child);
-      $compile(child)($rootScope);
-    }));
-
-    it('should inheriths the controller', function() {
-      var inheritedController = child.controller('ngDjangoFormsetCtrl');
-      expect(inheritedController).to.be.ok;
-      expect(inheritedController).to.be.equal(controller);
+      $compile(child)($scope);
     });
 
-    it('should register child on controller', function() {
-      expect(registerChildFn.called).to.be.ok;
-      // Check if the directive element was sent to method
-      expect(registerChildFn.getCall(0).args[0][0]).to.be.equal(child[0]);
+    it('should be a child of container', function() {
+      expect(container).to.have(child);
     });
 
-    it('should destroy child on controller uppon element remove', function() {
+    it('should update (add 1) TOTAL_FORMS count when added', function() {
+      expect(child).to.exist;
+      expect(totalFormsInput).to.have.value('1');
+    });
+
+    it('should update (subtract 1) TOTAL_FORMS count when removed', function() {
       child.remove();
-
-      expect(destroyChildFn.called).to.be.ok;
-      // Check if the directive element was sent to method
-      expect(destroyChildFn.getCall(0).args[0][0]).to.be.equal(child[0]);
+      expect(container).to.not.have(child);
+      expect(totalFormsInput).to.have.value('0');
     });
   });
 
-  describe.skip('formset-add', function() {
+  describe('formset-add', function() {
     var addButton;
 
-    beforeEach(inject(function($rootScope, $compile) {
+    beforeEach(function() {
       addButton = angular.element('<button formset-add></button>');
       formset.append(addButton);
-      $compile(addButton)($rootScope);
-    }));
-
-    it('should inheriths the controller', function() {
-      var inheritedController = addButton.controller('djangoFormset');
-      expect(inheritedController).to.be.ok;
-      expect(inheritedController).to.be.equal(controller);
+      $compile(addButton)($scope);
     });
 
-    it('should add a formset child uppon click', function() {
-      var addChildFn = sinon.spy(controller, 'addFormset');
+    it('should add a formset child to container on click', function() {
+      expect(container).to.not.have('li[formset-child]');
       addButton.click();
-      expect(addChildFn.called).to.be.ok;
+      expect(container).to.have('li[formset-child]');
     });
 
-    it('should remove the event click when destroyed', function() {
-      var addChildFn = sinon.spy(controller, 'addFormset');
-      addButton.remove();
+    it('should update (add 1) TOTAL_FORMS count on click', function() {
       addButton.click();
-      expect(addChildFn.called).to.not.be.ok;
+      expect(totalFormsInput).to.have.value('1');
+    });
+
+    it('should have replaced __prefix__ to the formeset id', function() {
+      var child;
+      addButton.click();
+      expect(container.find('li')).to.have.data('fid').to.match(/^[0-9]+$/);
     });
   });
 
-  describe.skip('formset-remove', function() {
+  describe('formset-remove', function() {
     var removeButton;
 
-    beforeEach(inject(function($rootScope, $compile) {
-      removeButton = angular.element('<button formset-remove>' +
-        '</button>');
+    beforeEach(function() {
+      removeButton = angular.element('<button formset-remove></button>');
       // Setup remove button inside a child
-      child = angular.element('<li formset-child></li>');
+      child = angular.element(childTemplate);
       child.append(removeButton);
       container.append(child);
-      // Create
-      $compile(removeButton)($rootScope);
-    }));
-
-    it('should inheriths the controller', function() {
-      var inheritedController = removeButton.controller('djangoFormset');
-      expect(inheritedController).to.be.ok;
-      expect(inheritedController).to.be.equal(controller);
+      // Compile a child
+      $compile(child)($scope);
     });
 
-    it('should remove current fomset child on the controller',
-      function() {
-        var removeChildFn = sinon.spy(controller, 'removeFormset');
-        removeButton.click();
-        expect(removeChildFn.called).to.be.ok;
-      }
-    );
+    it('should remove child when clicked', function() {
+      expect(container).to.have('li[formset-child]');
+      removeButton.click();
+      expect(container).to.not.have('li[formset-child]');
+    });
 
-    it('should only execute click once', function() {
-      var removeChildFn = sinon.spy(controller, 'removeFormset');
+    it('should update (take away 1) TOTAL_FORMS count on click', function() {
       removeButton.click();
-      removeButton.click();
-      expect(removeChildFn.calledOnce).to.be.ok;
+      expect(totalFormsInput).to.have.value('0');
     });
   });
 });
