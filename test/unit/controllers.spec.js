@@ -71,12 +71,9 @@ describe('ngDjangoFormsetCtrl', function(){
     );
 
     it('should find the __totalforms__ element', function() {
-      var totalFormsValue = '10';
-      totalInputEl.val(totalFormsValue);
-
       controller.setup(formset);
       expect(controller.__totalforms__).to.be.defined;
-      expect(controller.__totalforms__.val()).to.be.equal(totalFormsValue);
+      expect(controller.__totalforms__.val()).to.be.equal('0');
     });
 
     it('should find the __minforms__ element', function() {

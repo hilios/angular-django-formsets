@@ -80,8 +80,9 @@ angular.module('ngDjangoFormset')
     }
 
     self.update = function() {
-      if(self.__totalforms__)	  
+      if(self.__totalforms__) {	  
         self.__totalforms__.val(self.__children__.length);
+      }
     }
 
     self.addFormset = function() {
