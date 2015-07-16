@@ -72,6 +72,7 @@ angular.module('ngDjangoFormset')
         throw new SyntaxError("Formset container cound't be found, " +
           "please add formset-container to a child element");
       }
+      self.update();
     }
 
     self.setupContainer = function(element) {
@@ -79,7 +80,8 @@ angular.module('ngDjangoFormset')
     }
 
     self.update = function() {
-      self.__totalforms__.val(self.__children__.length);
+      if(self.__totalforms__)	  
+        self.__totalforms__.val(self.__children__.length);
     }
 
     self.addFormset = function() {
