@@ -39,7 +39,12 @@ angular.module('ngDjangoFormset')
     link: function postLink(scope, element, attrs, controller) {
       element.on('click', function(event) {
         event.preventDefault();
-        controller.addFormset();
+        var fn = window[attrs.callback];
+        if(typeof fn === 'function') {
+          controller.addFormset(fn);
+        } else {
+          controller.addFormset(null);
+        } 
       });
       element.on('$destroy', function() {
         element.off('click');
