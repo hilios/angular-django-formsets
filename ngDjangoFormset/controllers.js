@@ -10,6 +10,8 @@ angular.module('ngDjangoFormset')
     self.__formsetprefix__ = $attrs.formsetPrefix || 'form';
     self.__candelete__ = $attrs.formsetCanDelete || false;
     self.__canorder__ = $attrs.formsetCanOrder || false;
+    self.__on_add__ = $attrs.onAdd || null;
+    self.__on_remove__ = $attrs.onRemove || null;
 
     self.__formset__ = null;
     self.__container__ = null;
@@ -82,7 +84,7 @@ angular.module('ngDjangoFormset')
       self.__totalforms__.val(self.__children__.length);
     }
 
-    self.addFormset = function(fn) {
+    self.addFormset = function() {
       if(self.__children__.length < self.__maxforms__) {
         self.__fid__ += 1;
         // Setup a new element from template
@@ -93,9 +95,8 @@ angular.module('ngDjangoFormset')
         self.__container__.append(element);
         // Compile after append to inherits controller
         $compile(element)(self.__formset__.scope() || {});
-        if(fn) {
-          fn.apply(null, [self]);
-        }
+	if(self.__on_add__!==null)
+	  self.callExtFunction(self.__on_add__);
         return element;
       }
     }
@@ -120,8 +121,22 @@ angular.module('ngDjangoFormset')
           } finally {
             child.remove();
           }
+	  if(self.__on_remove__!==null)
+	    self.callExtFunction(self.__on_remove__);
+
         }
         return child;
+      }
+    }
+
+    self.callExtFunction = function(fname) {
+      if(self.__formset__.scope()[fname]) {
+	if(typeof(self.__formset__.scope()[fname])=='function')
+	  self.__formset__.scope()[fname](self);
+      } else {
+	fn = window[fname];
+	if(typeof fn === 'function')
+	  fn.apply(null, [self]);
       }
     }
 

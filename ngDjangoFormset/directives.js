@@ -3,7 +3,6 @@ angular.module('ngDjangoFormset')
   return {
     require: 'formset',
     restrict: 'A',
-    scope: {},
     controller: 'ngDjangoFormsetCtrl',
     link: function postLink(scope, element, attrs, controller) {
       controller.setup(element);
@@ -39,12 +38,7 @@ angular.module('ngDjangoFormset')
     link: function postLink(scope, element, attrs, controller) {
       element.on('click', function(event) {
         event.preventDefault();
-        var fn = window[attrs.callback];
-        if(typeof fn === 'function') {
-          controller.addFormset(fn);
-        } else {
-          controller.addFormset(null);
-        } 
+        controller.addFormset();
       });
       element.on('$destroy', function() {
         element.off('click');
