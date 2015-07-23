@@ -3,6 +3,7 @@ angular.module('ngDjangoFormset')
   return {
     require: 'formset',
     restrict: 'A',
+    scope: {},
     controller: 'ngDjangoFormsetCtrl',
     link: function postLink(scope, element, attrs, controller) {
       controller.setup(element);
